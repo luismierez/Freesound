@@ -2,24 +2,37 @@ package grawlix.freesound;
 
 import android.app.Activity;
 import android.content.res.Configuration;
+import android.os.AsyncTask;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
+
+import org.apache.http.NameValuePair;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import grawlix.freesound.FreesoundAPI.FreesoundClient;
+import grawlix.freesound.Resources.Sound;
 
 
 public class MainActivity extends ActionBarActivity {
 
     private ListView mDrawerList;
     private DrawerLayout mDrawer;
+    private TextView mTestText;
     private int mSelectedFragment;
     private CustomActionBarDrawerToggle mDrawerToggle;
-    private String[] test = {"test1", "test2", "test3"};
+    private String[] test = {"Home", "Random Sound of the Day", "Most Downloaded Sounds"};
+    private FreesoundClient client = FreesoundClient.getInstance();
 
     private static String BUNDLE_SELECTEDFRAGMENT = "BDL_SELFRG";
 
@@ -37,6 +50,7 @@ public class MainActivity extends ActionBarActivity {
         getActionBar().setDisplayHomeAsUpEnabled(true);
         //getActionBar().setHomeButtonEnabled(true);
 
+        mTestText = (TextView) findViewById(R.id.testText);
         mDrawerList = (ListView) findViewById(R.id.drawer);
 
         // Set the adapter for drawer list
@@ -46,6 +60,9 @@ public class MainActivity extends ActionBarActivity {
 
         mDrawerToggle = new CustomActionBarDrawerToggle(this, mDrawer);
         mDrawer.setDrawerListener(mDrawerToggle);
+        // Freesound API key
+        client.setClientSecret("97cd22ae047813db794abfb26de7a43273e0d5f6");
+        new GetSounds().execute();
     }
 
     @Override
@@ -100,6 +117,29 @@ public class MainActivity extends ActionBarActivity {
         public void onDrawerOpened(View view) {
             getActionBar().setTitle("Freesound");
             invalidateOptionsMenu();
+        }
+    }
+
+    private class GetSounds extends AsyncTask<Void, Void, Void> {
+
+        String soundName;
+        @Override
+        protected void onPreExecute() {
+
+        }
+
+        @Override
+        protected Void doInBackground(Void... strings) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            Sound sound = client.getSound("1234", params);
+            Log.d("doInBackground", sound.getName());
+            soundName = sound.getName();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            mTestText.setText(soundName);
         }
     }
 }
