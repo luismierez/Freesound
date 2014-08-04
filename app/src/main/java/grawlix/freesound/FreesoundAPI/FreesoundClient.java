@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import grawlix.freesound.Resources.SearchResult;
 import grawlix.freesound.Resources.Sound;
 import grawlix.freesound.Util.JSONParser;
 
@@ -47,10 +48,11 @@ public class FreesoundClient {
         return new Sound(soundObject);
     }
 
-    public ArrayList<Sound> textSearch(String searchTerm) {
+    public SearchResult textSearch(String searchTerm, List<NameValuePair> params) {
         String searchURI = URIS.BASE + URIS.SEARCH_TEXT;
         searchURI = searchURI + searchTerm;
-        return null;
+        JSONObject searchObject = jsonParser.makeHttpRequest(searchURI, "GET", params);
+        return new SearchResult(searchObject);
     }
 
 

@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import grawlix.freesound.FreesoundAPI.FreesoundClient;
+import grawlix.freesound.Resources.SearchResult;
 import grawlix.freesound.Resources.Sound;
 
 
@@ -62,7 +63,8 @@ public class MainActivity extends ActionBarActivity {
         mDrawer.setDrawerListener(mDrawerToggle);
         // Freesound API key
         client.setClientSecret("97cd22ae047813db794abfb26de7a43273e0d5f6");
-        new GetSounds().execute();
+        //new GetSounds().execute();
+        new doSearch().execute();
     }
 
     @Override
@@ -140,6 +142,20 @@ public class MainActivity extends ActionBarActivity {
         @Override
         protected void onPostExecute(Void result) {
             mTestText.setText(soundName);
+        }
+    }
+
+    private class doSearch extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            SearchResult searchResult = client.textSearch("cars", params);
+            for (int i = 0; i < searchResult.getResultsSize(); i++) {
+                Log.d("Search id: " + i, searchResult.getSound(i).getName());
+            }
+
+            return null;
         }
     }
 }
