@@ -1,80 +1,38 @@
 package grawlix.freesound.FreesoundAPI;
 
-import org.apache.http.NameValuePair;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import grawlix.freesound.Resources.SearchResult;
+import grawlix.freesound.Resources.SearchText;
 import grawlix.freesound.Resources.Sound;
-import grawlix.freesound.Util.JSONParser;
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.http.GET;
+import retrofit.http.Path;
+import retrofit.http.Query;
 
 /**
- * Created by luismierez on 8/1/14.
- * Singleton class to handle all of the Freesound Api stuff
+ * Created by luismierez on 8/5/14.
  */
 public class FreesoundClient {
-    private String _client_secret = "";
-    private String client_id = "";
-    private String token = "";
-    private String header = "";
-    private JSONParser jsonParser = new JSONParser();
+    private static Freesound mFreesoundService;
 
-    private static FreesoundClient _instance = null;
+    public static Freesound getFreesoundApiClient() {
+        if (mFreesoundService == null) {
+            RestAdapter restAdapter = new RestAdapter.Builder()
+                    .setEndpoint("http://www.freesound.org/apiv2")
+                    .build();
 
-    protected FreesoundClient() {
-        // Exists only to defeat instantiation
-    }
-    public static FreesoundClient getInstance() {
-        if (_instance == null) {
-            _instance = new FreesoundClient();
+            mFreesoundService = restAdapter.create(Freesound.class);
         }
-        return _instance;
+
+        return mFreesoundService;
     }
 
-    public void setClientSecret(String client_secret) {
-        _client_secret = client_secret;
-    }
-    /**
-     * This need to be called inside an AsyncTask so it doesn't lock the UI
-     * @param soundId
-     * @return Sound object
-     */
-    public Sound getSound(String soundId, List<NameValuePair> params) {
-        String sounduri = URIS.SOUND_INSTANCE.replaceAll("<sound_id>", soundId);
-        sounduri = URIS.BASE + sounduri;
-        JSONObject soundObject = jsonParser.makeHttpRequest(sounduri, "GET", params);
-        return new Sound(soundObject);
-    }
+    public interface Freesound {
+        @GET("/sounds/{sound_id}")
+        Sound getSound(
+            @Path("sound_id") String sound_id
+        );
 
-    public SearchResult textSearch(String searchTerm, List<NameValuePair> params) {
-        String searchURI = URIS.BASE + URIS.SEARCH_TEXT;
-        searchURI = searchURI + searchTerm;
-        JSONObject searchObject = jsonParser.makeHttpRequest(searchURI, "GET", params);
-        return new SearchResult(searchObject);
-    }
-
-
-
-
-    private class URIS {
-        static final String HOST = "www.freesound.org";
-        static final String BASE = "https://" + HOST + "/apiv2";
-        // Search Resources
-        static final String SEARCH_TEXT = "/search/text/";
-        static final String SEARCH_CONTENT = "/search/content/";
-        static final String SEARCH_COMBINED = "/search/combined/";
-        // Sound Resources
-        static final String SOUND_INSTANCE = "/sounds/<sound_id>/";
-        static final String SOUND_SIMILAR = "/sounds/<sound_id>/similar/";
-        static final String SOUND_ANALYSIS = "/sounds/<sound_id>/analysis/";
-        static final String SOUND_COMMENTS = "/sounds/<sound_id>/comments/";
-
-        //  Rest require oauth - will be implemented later
-        static final String SOUND_DOWNLOAD = "/sounds/<sound_id>/download/";
-        static final String SOUND_BOOKMARK = "/sounds/<sound_id>/bookmark/";
-
-
+        @GET("/search/text/")
+        void searchText(@Query("query") String query, @Query("token") String token, Callback<SearchText> callback);
     }
 }

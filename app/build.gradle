@@ -36,9 +36,12 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.squareup.picasso:picasso:2.3.2'
-//Core card library
+    //Core card library
     compile 'com.github.gabrielemariotti.cards:library:1.8.0'
 
     //Extra card library, it is required only if you want to use integrations with other libraries
     compile 'com.github.gabrielemariotti.cards:library-extra:1.8.0'
+
+    // Retrofit library
+    compile 'com.squareup.retrofit:retrofit:1.6.1'
 }
