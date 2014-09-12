@@ -11,6 +11,7 @@ import java.util.List;
 
 import grawlix.freesound.R;
 import grawlix.freesound.Resources.Result;
+import it.gmariotti.cardslib.library.view.CardView;
 
 /**
  * Created by luismierez on 8/3/14.
@@ -60,5 +61,6 @@ public class SoundAdapter extends ArrayAdapter<Result> {
     private static final class Holder {
         public TextView soundName;
         public TextView soundId;
+        public CardView card;
     }
 }

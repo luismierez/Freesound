@@ -66,7 +66,9 @@ public class MainActivity extends ActionBarActivity implements ResultsFragment.R
 
         manager = getSupportFragmentManager();
         // Set the list fragment initially
-        manager.beginTransaction().replace(R.id.fragment_main, new ResultsFragment()).commit();
+        manager.beginTransaction().replace(R.id.fragment_main, new ResultsFragment())
+                .addToBackStack(null)
+                .commit();
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
