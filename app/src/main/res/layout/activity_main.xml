@@ -9,10 +9,11 @@
         android:id="@+id/fragment_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#ffff0700"
+
     />
 
     <!-- The Navigation Drawer -->
+
     <ListView
         android:id="@+id/drawer"
         android:layout_width="340dp"
@@ -23,6 +24,8 @@
         android:dividerHeight="1dp"
         android:background="@android:color/white"
     />
+
+
 
 
 </android.support.v4.widget.DrawerLayout>

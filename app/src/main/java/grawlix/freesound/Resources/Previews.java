@@ -1,13 +1,19 @@
 package grawlix.freesound.Resources;
 
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by luismierez on 8/5/14.
  */
 public class Previews {
 
+    @SerializedName("preview-lq-ogg")
     private String previewLqOgg;
+    @SerializedName("preview-lq-mp3")
     private String previewLqMp3;
+    @SerializedName("preview-hq-ogg")
     private String previewHqOgg;
+    @SerializedName("preview-hq-mp3")
     private String previewHqMp3;
 
     public String getPreviewLqOgg() {

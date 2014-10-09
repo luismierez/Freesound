@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
-        android:id="@+id/sound_name"
+    <it.gmariotti.cardslib.library.view.CardView
+        android:id="@+id/list_sound_card_view"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-    <TextView
-        android:id="@+id/sound_id"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content" />
-
-
-
-
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="-20dp"
+        android:background="@drawable/my_card_shadow"
+        />
 </LinearLayout>

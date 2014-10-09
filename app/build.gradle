@@ -3,7 +3,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.11.+'
+        classpath 'com.android.tools.build:gradle:0.12.+'
     }
 }
 
@@ -14,13 +14,11 @@ repositories {
 }
 
 android {
-    compileSdkVersion 19
-    buildToolsVersion "19.1.0"
+    compileSdkVersion "android-L"
+    buildToolsVersion "20.0.0"
 
     defaultConfig {
         applicationId "grawlix.freesound"
-        minSdkVersion 14
-        targetSdkVersion 19
         versionCode 1
         versionName "1.0"
     }
@@ -34,7 +32,6 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:19.+'
     compile 'com.squareup.picasso:picasso:2.3.2'
     //Core card library
     compile 'com.github.gabrielemariotti.cards:library:1.8.0'
@@ -44,4 +41,11 @@ dependencies {
 
     // Retrofit library
     compile 'com.squareup.retrofit:retrofit:1.6.1'
+
+    // Parallax List
+    compile 'com.github.nirhart:parallaxscroll:1.0'
+
+    // Jsoup
+    compile 'org.jsoup:jsoup:1.8.1'
+
 }

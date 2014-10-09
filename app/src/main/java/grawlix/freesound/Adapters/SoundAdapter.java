@@ -11,6 +11,8 @@ import java.util.List;
 
 import grawlix.freesound.R;
 import grawlix.freesound.Resources.Result;
+import it.gmariotti.cardslib.library.internal.Card;
+import it.gmariotti.cardslib.library.internal.CardHeader;
 import it.gmariotti.cardslib.library.view.CardView;
 
 /**
@@ -29,14 +31,20 @@ public class SoundAdapter extends ArrayAdapter<Result> {
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
         Holder holder;
+        Result result = getItem(position);
 
         if (view == null) {
             // View doesn't exist so create it and create the holder
             view = mInflater.inflate(R.layout.search_list_layout, parent, false);
 
             holder = new Holder();
-            holder.soundName = (TextView) view.findViewById(R.id.sound_name);
-            holder.soundId = (TextView) view.findViewById(R.id.sound_id);
+            holder.card = (CardView) view.findViewById(R.id.list_sound_card_view);
+
+            CardHeader header = new CardHeader(getContext());
+            header.setTitle(result.getName());
+            Card mCard = new Card(getContext());
+            mCard.addCardHeader(header);
+            holder.card.setCard(mCard);
 
             view.setTag(holder);
         } else {
@@ -45,13 +53,16 @@ public class SoundAdapter extends ArrayAdapter<Result> {
         }
 
         // Populate via the holder for speed
-        Result result = getItem(position);
 
+        CardHeader header = new CardHeader(getContext());
+        header.setTitle(result.getName());
+        Card mCard = new Card(getContext());
+        mCard.addCardHeader(header);
+        holder.card.refreshCard(mCard);
 
         // populate the item contents
-        //Log.d("result", result.getName());
-        holder.soundName.setText(result.getName());
-        holder.soundId.setText(String.valueOf(result.getId()));
+
+
 
         return view;
 
@@ -59,8 +70,7 @@ public class SoundAdapter extends ArrayAdapter<Result> {
 
     // Holder class used to efficiently recycle view positions
     private static final class Holder {
-        public TextView soundName;
-        public TextView soundId;
+
         public CardView card;
     }
 }

@@ -1,5 +1,7 @@
 package grawlix.freesound.FreesoundAPI;
 
+import com.google.gson.GsonBuilder;
+
 import grawlix.freesound.Resources.SearchText;
 import grawlix.freesound.Resources.Sound;
 import retrofit.Callback;
@@ -20,6 +22,7 @@ public class FreesoundClient {
         if (mFreesoundService == null) {
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint("http://www.freesound.org/apiv2")
+                    //.setLogLevel(RestAdapter.LogLevel.FULL) // Log everything
                     .setRequestInterceptor(new RequestInterceptor() {
                         @Override
                         public void intercept(RequestFacade requestFacade) {
@@ -46,6 +49,14 @@ public class FreesoundClient {
         void searchText(
                 @Query("query") String query,
                 @Query("page") int page,
+                Callback<SearchText> callback
+        );
+
+        @GET("/search/text/")
+        void searchText(
+                @Query("query") String query,
+                @Query("page") int page,
+                @Query("sort") String sort,
                 Callback<SearchText> callback
         );
 

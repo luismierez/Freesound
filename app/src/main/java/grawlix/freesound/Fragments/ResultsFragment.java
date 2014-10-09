@@ -1,14 +1,15 @@
 package grawlix.freesound.Fragments;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,13 +26,18 @@ import retrofit.client.Response;
 /**
  * Created by luismierez on 8/5/14.
  */
-public class ResultsFragment extends Fragment implements AdapterView.OnItemClickListener {
+public class ResultsFragment extends Fragment implements AdapterView.OnItemClickListener, Button.OnClickListener {
+
 
     AbsListView resultsList;
     ResultsCommunicator communicator;
     List<Result> results = new ArrayList<Result>();
     SoundAdapter mAdapter;
-    private int nextPage = 0;
+    Button btn_next;
+    Button btn_previous;
+    private int nextPage = 1;
+    String search_query;
+    String sort;
 
 
     @Override
@@ -52,7 +58,10 @@ public class ResultsFragment extends Fragment implements AdapterView.OnItemClick
         if (resultsList == null) {
             Log.d("onCreate", "resultsList is null");
         }
-        //resultsList.setAdapter(mAdapter);
+        search_query = getArguments().getString("SEARCH_QUERY");
+        // Make sure that we gave a sort argument to the fragment
+        if (getArguments().getString("SORT")!=null)
+            sort = getArguments().getString("SORT");
 
     }
 
@@ -63,6 +72,11 @@ public class ResultsFragment extends Fragment implements AdapterView.OnItemClick
         resultsList.setOnItemClickListener(this);
         resultsList.setAdapter(mAdapter);
 
+        btn_next = (Button) view.findViewById(R.id.btn_next);
+        btn_previous = (Button) view.findViewById(R.id.btn_previous);
+        btn_next.setOnClickListener(this);
+        btn_previous.setOnClickListener(this);
+
         return view;
     }
     @Override
@@ -70,17 +84,16 @@ public class ResultsFragment extends Fragment implements AdapterView.OnItemClick
         if (getActivity()!=null) {
             resultsList.setItemChecked(i, true);
             communicator.respond(results.get(i).getId());
-
         }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (nextPage == 0 ) {
-            downloadData("cars");
+        if (getArguments().getString("SORT")!=null) {
+            downloadData(search_query, nextPage, sort);
         } else {
-            downloadData("cars", nextPage);
+            downloadData(search_query);
         }
 
 
@@ -114,11 +127,55 @@ public class ResultsFragment extends Fragment implements AdapterView.OnItemClick
         });
     }
 
+    private void downloadData(String searchTerm, int page, String sortTerm) {
+        FreesoundClient.getFreesoundApiClient().searchText(searchTerm, page, sortTerm, new Callback<SearchText>() {
+            @Override
+            public void success(SearchText searchText, Response response) {
+                consumeApiData(searchText);
+            }
+
+            @Override
+            public void failure(RetrofitError retrofitError) {
+                consumeApiData(null);
+            }
+        });
+    }
+
     private void consumeApiData(SearchText searchText) {
         if (searchText != null) {
+            results.clear();
             results.addAll(searchText.getResults());
+
             mAdapter.notifyDataSetChanged();
-            nextPage++;
+            resultsList.smoothScrollToPosition(0);
+        }
+    }
+
+    @Override
+    public void onClick(View view) {
+
+        switch (view.getId()) {
+            case R.id.btn_next: {
+                nextPage++;
+                if (getArguments().getString("SORT")!= null) {
+                    downloadData(search_query, nextPage, sort);
+                } else {
+                    downloadData(search_query, nextPage);
+                }
+
+                break;
+            }
+
+            case R.id.btn_previous: {
+                nextPage--;
+                if (getArguments().getString("SORT")!= null) {
+                    downloadData(search_query, nextPage, sort);
+                } else {
+                    downloadData(search_query, nextPage);
+                }
+
+            }
+
         }
     }
 
