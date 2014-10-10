@@ -62,8 +62,6 @@ public class SoundAdapter extends ArrayAdapter<Result> {
 
         // populate the item contents
 
-
-
         return view;
 
     }

@@ -5,6 +5,7 @@
     android:layout_width="fill_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
+
     <RelativeLayout
         android:id="@+id/frame"
         android:layout_width="fill_parent"
@@ -26,16 +27,19 @@
             android:text="Next Page" />
     </RelativeLayout>
 
+    <!-- Contains the loader view -->
+    <include layout="@layout/excerpt_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_below="@id/frame"/>
 
-    <com.nirhart.parallaxscroll.views.ParallaxListView
-        android:id="@+id/results_list"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/results_recycler_list"
+        android:scrollbars="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/frame"
-        android:divider="@android:color/transparent"
-        android:dividerHeight="1dp"
-        app:parallax_factor="1.5"
-        app:circular_parallax="true"
         />
 
 

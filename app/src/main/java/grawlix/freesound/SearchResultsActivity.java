@@ -5,17 +5,15 @@ import android.app.Activity;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import grawlix.freesound.Fragments.ResultsFragment;
-import grawlix.freesound.R;
 
 /**
  * Created by luismierez on 9/12/14.
  */
 public class SearchResultsActivity extends Activity implements ResultsFragment.ResultsCommunicator {
 
+    private int soundId;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,8 +41,13 @@ public class SearchResultsActivity extends Activity implements ResultsFragment.R
 
     @Override
     public void respond(int soundId) {
+        this.soundId = soundId;
+        /*
         Intent intent = new Intent(this, SoundInstanceActivity.class);
         intent.putExtra("SOUND_ID", soundId);
         startActivity(intent);
+        */
+
     }
+
 }

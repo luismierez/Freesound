@@ -84,7 +84,7 @@ public class SoundInstanceFragment extends Fragment implements View.OnClickListe
             // get service
             musicService = binder.getService();
             // pass song url
-            musicService.setSongUrl(soundUrl);
+            //musicService.setSongUrl(soundUrl);
 
             if (musicService==null)
                 Log.d("musicService in ServiceConnection", "null");
@@ -219,7 +219,7 @@ public class SoundInstanceFragment extends Fragment implements View.OnClickListe
     public void onClick(View view) {
         if (view.getId()== R.id.button_play_pause) {
             Log.d("soundUrl", soundUrl);
-            musicService.setSongUrl(soundUrl);
+            //musicService.setSongUrl(soundUrl);
             musicService.playSong();
         }
     }
