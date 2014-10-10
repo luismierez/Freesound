@@ -142,8 +142,11 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
     @Override
     public void onPause() {
         super.onPause();
+        //musicService.unbindService(musicConnection);
+
         paused=true;
     }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -217,6 +220,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
         super.onResume();
         if (paused) {
             setController();
+            getActivity().bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
             paused=false;
         }
         if (getArguments().getString("SORT")!=null) {
@@ -325,55 +329,8 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
 
         // Set the "show" view to 0% opacity but visible, so that it is visible
         // (but fully transparent) during the animation
-        //showView.setAlpha(0f);
+        showView.setAlpha(0f);
         showView.setVisibility(View.VISIBLE);
-
-        // get the final radius for the clipping circle
-        int cx = (showView.getLeft() + showView.getRight()) / 2;
-        int cy = (showView.getTop() + showView.getBottom()) / 2;
-
-        // get the final radius for the clipping circle
-        int finalRadius = showView.getWidth();
-
-        // create and start the animator for this view (the start radius is zero)
-        ValueAnimator animShow = ViewAnimationUtils.createCircularReveal(showView, cx, cy, 0, finalRadius);
-        animShow.start();
-
-        cx = (hideView.getLeft() + hideView.getRight()) / 2;
-        cy = (hideView.getTop() + hideView.getBottom()) / 2;
-
-        int initialRadius = hideView.getWidth();
-
-        // create the animation ( the final radius is zero )
-        ValueAnimator animHide =
-                ViewAnimationUtils.createCircularReveal(hideView, cx, cy, initialRadius, 0);
-
-        animHide.addListener(new Animator.AnimatorListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                hideView.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationCancel(Animator animator) {
-
-            }
-
-            @Override
-            public void onAnimationRepeat(Animator animator) {
-
-            }
-        });
-
-        animHide.start();
-
-
-        /*
 
         // Animate the "show" view to 100% opacity, and clear any animation listener set on
         // the view. Remember that listeners are not limited to the specific animation
@@ -412,7 +369,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
                     }
 
                 });
-        */
+
     }
 
     @Override
