@@ -22,7 +22,7 @@ public class FreesoundClient {
         if (mFreesoundService == null) {
             RestAdapter restAdapter = new RestAdapter.Builder()
                     .setEndpoint("http://www.freesound.org/apiv2")
-                    //.setLogLevel(RestAdapter.LogLevel.FULL) // Log everything
+                    .setLogLevel(RestAdapter.LogLevel.FULL) // Log everything
                     .setRequestInterceptor(new RequestInterceptor() {
                         @Override
                         public void intercept(RequestFacade requestFacade) {
@@ -45,14 +45,14 @@ public class FreesoundClient {
             Callback<Sound> callback
         );
 
-        @GET("/search/text/")
+        @GET("/search/text/?fields=id,name,tags,username,previews,images,geotag")
         void searchText(
                 @Query("query") String query,
                 @Query("page") int page,
                 Callback<SearchText> callback
         );
 
-        @GET("/search/text/")
+        @GET("/search/text/?fields=id,name,tags,username,previews,images,geotag")
         void searchText(
                 @Query("query") String query,
                 @Query("page") int page,
@@ -60,9 +60,15 @@ public class FreesoundClient {
                 Callback<SearchText> callback
         );
 
-        @GET("/search/text/")
+        @GET("/search/text/?fields=id,name,tags,username,previews,images,geotag")
         void searchText(
                 @Query("query") String query,
+                Callback<SearchText> callback
+        );
+
+        @GET("/search/text/?fields=id,name,tags,username,previews,images,geotag")
+        void geoSearch(
+                @Query("filter")String geoQuery,
                 Callback<SearchText> callback
         );
     }

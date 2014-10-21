@@ -15,7 +15,7 @@ public class Sound {
     private String name;
     private List<String> tags = new ArrayList<String>();
     private String description;
-    private Object geotag;
+    private String geotag;
     private String created;
     private String license;
     private String type;
@@ -83,11 +83,11 @@ public class Sound {
         this.description = description;
     }
 
-    public Object getGeotag() {
+    public String getGeotag() {
         return geotag;
     }
 
-    public void setGeotag(Object geotag) {
+    public void setGeotag(String geotag) {
         this.geotag = geotag;
     }
 

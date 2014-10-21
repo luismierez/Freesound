@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.IBinder;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -24,6 +26,16 @@ import android.widget.ListView;
 import android.widget.SearchView;
 
 
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.MapsInitializer;
+import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,6 +43,7 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 
+import grawlix.freesound.Fragments.LocationSoundFragment;
 import grawlix.freesound.Fragments.ResultsFragment;
 import grawlix.freesound.Fragments.SoundInstanceFragment;
 import grawlix.freesound.Fragments.WelcomeFragment;
@@ -41,7 +54,8 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
     private ListView mDrawerList;
     private DrawerLayout mDrawer;
     private CustomActionBarDrawerToggle mDrawerToggle;
-    private String[] test = {"Home", "Random Sound of the Day", "Most Recent Sounds"};
+    private String[] test = {"Home", "Random Sound of the Day", "Most Recent Sounds", "Sounds Around Me"};
+
 
     //------------Fragments----------------//
     FragmentManager manager;
@@ -62,8 +76,6 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
 
     }
 
-    private static String BUNDLE_SELECTEDFRAGMENT = "BDL_SELFRG";
-
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -71,6 +83,7 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        //setActionBarIcon(R.drawable.ic_navigation_drawer);
         setContentView(R.layout.activity_main);
 
         manager = getFragmentManager();
@@ -93,13 +106,23 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
         mDrawerToggle = new CustomActionBarDrawerToggle(this, mDrawer);
 
         mDrawer.setDrawerListener(mDrawerToggle);
+        mDrawer.setDrawerShadow(R.drawable.drawer_shadow, Gravity.START);
+
+
 
     }
-
+    /*
+    @Override
+    protected int getLayoutResource() {
+        return R.layout.activity_main;
+    }
+    */
 
     @Override
     protected void onResume() {
         super.onResume();
+        //googleMap = mapFragment.getMap();
+
     }
 
 
@@ -157,12 +180,15 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
         @Override
         public void onDrawerClosed(View view) {
             getActionBar().setTitle("Freesound");
+            //setActionBarTitle("Freesound");
             invalidateOptionsMenu();
         }
 
         @Override
         public void onDrawerOpened(View view) {
             getActionBar().setTitle("Freesound");
+            //setActionBarTitle("Freesound");
+
             invalidateOptionsMenu();
         }
     }
@@ -236,10 +262,20 @@ public class MainActivity extends Activity implements ResultsFragment.ResultsCom
                 mostRecentSoundsFragment.setArguments(args);
                 manager.beginTransaction().replace(R.id.fragment_main, mostRecentSoundsFragment).commit();
                 mDrawer.closeDrawer(mDrawerList);
+                break;
 
+            }
 
+            case 3: {
+                // Sounds around you
+                LocationSoundFragment soundFragment = new LocationSoundFragment();
+
+                manager.beginTransaction().replace(R.id.fragment_main, soundFragment).commit();
+                mDrawer.closeDrawer(mDrawerList);
+                break;
             }
         }
     }
+
 
 }

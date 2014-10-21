@@ -1,7 +1,6 @@
 package grawlix.freesound.Fragments;
 
 import android.animation.Animator;
-import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.app.Fragment;
 import android.content.ComponentName;
@@ -16,7 +15,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewAnimationUtils;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.MediaController;
@@ -68,6 +66,10 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
 
     private int currentSelectedSound = 0;
 
+    private String soundUrl = "";
+
+    private View verticalLine;
+
     private void setController() {
         // set the controller up
         controller = new MusicController(getActivity());
@@ -98,6 +100,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
             playbackPaused=false;
         }
         controller.show(0);
+
     }
 
     private void playPrev() {
@@ -119,7 +122,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
             // get service
             musicService = binder.getService();
             // pass id
-            musicService.setSongId(1111);
+            musicService.setSongUrl(soundUrl);
             musicBound = true;
         }
 
@@ -132,6 +135,8 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
     @Override
     public void onStart() {
         super.onStart();
+        String isNull =  playIntent == null ? "null" : "not null";
+        Log.d("onStart()", "playIntent is " + isNull);
         if (playIntent==null) {
             playIntent = new Intent(getActivity(), MusicService.class);
             getActivity().bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
@@ -142,9 +147,27 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
     @Override
     public void onPause() {
         super.onPause();
-        //musicService.unbindService(musicConnection);
-
+        if (musicBound) {
+            musicService.pausePlayer();
+            //musicService.unbindService(musicConnection);
+        }
         paused=true;
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("onDestroy()", "Was Called");
+        Log.d("onDestroy()", String.valueOf(paused));
+        if (!musicBound) {
+            //musicService.onDestroy();
+        } else {
+            musicService.pausePlayer();
+            //musicService.unbindService(musicConnection);
+            //musicService.onDestroy();
+        }
+        //playIntent = null;
+        paused = true;
+        super.onDestroy();
     }
 
     @Override
@@ -161,6 +184,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setController();
 
         search_query = getArguments().getString("SEARCH_QUERY");
         // Make sure that we gave a sort argument to the fragment
@@ -205,19 +229,23 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
         mRecyclerView.setVisibility(View.GONE);
         mShortAnimationDuration = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-        setController();
+        Log.d("Controller","Is controller showing " + controller.isShowing());
+
+        verticalLine = view.findViewById(R.id.vertical_line);
 
         return view;
     }
 
     private void selectItem(int position) {
-        musicService.setSongId(results.get(position).getId());
+        musicService.setSongUrl(results.get(position).getPreviews().getPreviewHqMp3());
         musicService.playSong();
+
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("onResume", "Paused: " + paused);
         if (paused) {
             setController();
             getActivity().bindService(playIntent, musicConnection, Context.BIND_AUTO_CREATE);
@@ -374,7 +402,7 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
 
     @Override
     public void start() {
-        musicService.start();
+        musicService.go();
     }
 
     @Override
@@ -385,7 +413,10 @@ public class ResultsFragment extends Fragment implements Button.OnClickListener,
 
     @Override
     public int getDuration() {
-        return 0;
+        if (musicService != null && musicBound && musicService.isPlaying()) {
+            return musicService.getDuration();
+        } else
+            return 0;
     }
 
     @Override

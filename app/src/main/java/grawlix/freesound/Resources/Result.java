@@ -11,8 +11,10 @@ public class Result {
     private Integer id;
     private String name;
     private List<String> tags = new ArrayList<String>();
-    private String license;
     private String username;
+    private Previews previews;
+    private Images images;
+    private String geotag;
 
     public Integer getId() {
         return id;
@@ -38,14 +40,6 @@ public class Result {
         this.tags = tags;
     }
 
-    public String getLicense() {
-        return license;
-    }
-
-    public void setLicense(String license) {
-        this.license = license;
-    }
-
     public String getUsername() {
         return username;
     }
@@ -53,4 +47,29 @@ public class Result {
     public void setUsername(String username) {
         this.username = username;
     }
+
+    public Previews getPreviews() {
+        return previews;
+    }
+
+    public void  setPreviews(Previews previews) {
+        this.previews = previews;
+    }
+
+    public Images getImages() {
+        return images;
+    }
+
+    public void setImages(Images images) {
+        this.images = images;
+    }
+
+    public String getGeoTag() {
+        return geotag;
+    }
+
+    public void setGeoTag(String geotag) {
+        this.geotag = geotag;
+    }
+
 }

@@ -12,14 +12,11 @@ import android.os.PowerManager;
 import android.util.Log;
 
 import java.io.IOException;
+import java.util.Random;
 
 import grawlix.freesound.Fragments.ResultsFragment;
-import grawlix.freesound.FreesoundAPI.FreesoundClient;
+
 import grawlix.freesound.R;
-import grawlix.freesound.Resources.Sound;
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
 
 /**
  * Created by luismierez on 10/8/14.
@@ -42,10 +39,14 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     private String songTitle = "";
     private static final int NOTIFY_ID=1;
 
+    private boolean shuffle = false;
+    private Random rand;
+
     public void onCreate() {
         // create the service
         super.onCreate();
 
+        rand = new Random();
         // create player
         player = new MediaPlayer();
 
@@ -64,33 +65,21 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.setOnErrorListener(this);
     }
 
-    public void setSongId(int id) {
-        soundId = id;
+    public void setSongUrl(String soundUrl) {
+        this.soundUrl = soundUrl;
 
     }
 
     public void playSong() {
         // play a song
         player.reset();
-        FreesoundClient.getFreesoundApiClient().getSound(soundId, new Callback<Sound>() {
-            @Override
-            public void success(Sound sound, Response response) {
-                soundUrl = sound.getPreviews().getPreviewHqMp3();
-                try {
-                    player.setDataSource(soundUrl);
-
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                player.prepareAsync();
-                songTitle = sound.getName();
-            }
-
-            @Override
-            public void failure(RetrofitError error) {
-
-            }
-        });
+        try {
+            Log.d("playSong() soundUrl", soundUrl);
+            player.setDataSource(soundUrl);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        player.prepareAsync();
     }
 
     // Binder Class
@@ -108,16 +97,15 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
 
     @Override
     public boolean onUnbind(Intent intent) {
+        Log.d("onUnbind", "Called");
         player.stop();
-        player.release();
+
         return false;
     }
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (player.getCurrentPosition()>0) {
-            mediaPlayer.reset();
-        }
+        mediaPlayer.reset();
     }
 
     @Override
@@ -131,9 +119,11 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         stopForeground(true);
     }
 
+
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         // start playback
+        Log.d("onPrepared", "Arrived");
         mediaPlayer.start();
 
         Intent notIntent = new Intent(this, ResultsFragment.class);
@@ -155,6 +145,7 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
     }
 
     public int getDuration() {
+        Log.d("getDuration", String.valueOf(player.getDuration()));
         return player.getDuration();
     }
 
@@ -170,7 +161,17 @@ public class MusicService extends Service implements MediaPlayer.OnPreparedListe
         player.seekTo(position);
     }
 
-    public void start() {
+    public void go() {
         player.start();
     }
+
+    public void setShuffle() {
+        if (shuffle) shuffle=false;
+        else shuffle=true;
+    }
+
+    public int getCurrentPosition() {
+        return player.getCurrentPosition();
+    }
 }
+

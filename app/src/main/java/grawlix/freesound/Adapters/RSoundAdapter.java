@@ -13,8 +13,13 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
+import grawlix.freesound.FreesoundAPI.FreesoundClient;
 import grawlix.freesound.R;
 import grawlix.freesound.Resources.Result;
+import grawlix.freesound.Resources.Sound;
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
 
 /**
  * Created by luismierez on 10/9/14.
@@ -53,11 +58,11 @@ public class RSoundAdapter extends RecyclerView.Adapter<RSoundAdapter.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, final int position) {
         Result result = mResults.get(position);
         holder.soundName.setText(result.getName());
-        Picasso.with(mContext).load(R.drawable.ic_launcher).resize(10, 10).centerInside().into(holder.soundImage);
 
+        Picasso.with(mContext).load(result.getImages().getWaveformM()).fit().into(holder.soundImage);
     }
 
     @Override
